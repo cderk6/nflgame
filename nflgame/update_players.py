@@ -105,9 +105,11 @@ def profile_id_from_url(url):
 
 def profile_url(gsis_id):
     resp, content = new_http().request(urls['gsis_profile'] % gsis_id, 'HEAD')
-    if resp['status'] != '301':
+    # Check response to previous request for permanent redirect. 
+    # If not permanent, we didn't find a profile url.
+    if resp.previous['status'] != '301':
         return None
-    loc = resp['location']
+    loc = resp.previous['location']
     if not loc.startswith('http://'):
         loc = 'http://www.nfl.com' + loc
     return loc
