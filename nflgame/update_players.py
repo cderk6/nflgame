@@ -105,7 +105,7 @@ def profile_id_from_url(url):
 
 def profile_url(gsis_id):
     resp, content = new_http().request(urls['gsis_profile'] % gsis_id, 'HEAD')
-    # Check response to previous request for permanent redirect. 
+    # Check response to previous request for permanent redirect.
     # If not permanent, we didn't find a profile url.
     if resp.previous['status'] != '301':
         return None
@@ -178,7 +178,7 @@ def meta_from_soup_row(team, soup_row):
     if ',' not in name:
         last_name, first_name = name, ''
     else:
-        last_name, first_name = map(lambda s: s.strip(), name.split(','))
+        last_name, first_name = map(lambda s: s.strip().replace(',', ''), name.split(',', 1))
 
     return {
         'team': team,
@@ -357,7 +357,7 @@ def run():
         players = {}
 
         # Grab players one game a time to avoid obscene memory requirements.
-        for _, schedule in nflgame.sched.games.itervalues():
+        for _, schedule in nflgame.sched.games.iteritems():
             # If the game is too far in the future, skip it...
             if nflgame.live._game_datetime(schedule) > nflgame.live._now():
                 continue
